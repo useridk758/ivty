@@ -12,12 +12,10 @@ let cart = JSON.parse(localStorage.getItem('ivty_cart')) || [];
 function filterCategory(cat, btn) {
     const container = document.getElementById('product-container');
     container.innerHTML = "";
-    
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
     const filtered = cat === 'all' ? products : products.filter(p => p.category === cat);
-
     filtered.forEach(p => {
         container.innerHTML += `
             <div class="product-card">
@@ -32,16 +30,11 @@ function filterCategory(cat, btn) {
 
 function addToCart(id) {
     const product = products.find(p => p.id === id);
-    cart.push({...product, cartId: Date.now()}); // Unique ID for removals
+    cart.push({...product, cartId: Date.now()});
     updateCartUI();
     if(!document.getElementById('cart-sidebar').classList.contains('open')) {
         toggleCart();
     }
-}
-
-function removeItem(cartId) {
-    cart = cart.filter(item => item.cartId !== cartId);
-    updateCartUI();
 }
 
 function updateCartUI() {
@@ -54,25 +47,29 @@ function updateCartUI() {
     let total = 0;
     cart.forEach(item => {
         total += item.price;
+        // FIXED: Now displays Name and Price in the cart
         list.innerHTML += `
             <div class="cart-item">
                 <div>
-                    <h5 style="margin:0">${item.name}</h5>
-                    <small>$${item.price}</small>
+                    <h5>${item.name}</h5>
+                    <p>$${item.price}</p>
                 </div>
-                <button class="remove-btn" onclick="removeItem(${item.cartId})">REMOVE</button>
+                <button style="color:red; border:none; background:none; cursor:pointer; font-weight:bold;" onclick="removeItem(${item.cartId})">REMOVE</button>
             </div>
         `;
     });
-    
     document.getElementById('cart-total-price').innerText = `$${total}`;
+}
+
+function removeItem(cartId) {
+    cart = cart.filter(item => item.cartId !== cartId);
+    updateCartUI();
 }
 
 function toggleCart() {
     document.getElementById('cart-sidebar').classList.toggle('open');
 }
 
-// Ensure the shop loads immediately
 window.onload = () => {
     filterCategory('all', document.querySelector('.filter-btn'));
     updateCartUI();
