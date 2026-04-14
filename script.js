@@ -1,9 +1,9 @@
 const products = [
     { id: 1, name: "IVTY V1 Hoodie", category: "sweaters", price: 85 },
     { id: 2, name: "IVTY Essential Tee", category: "shirts", price: 45 },
-    { id: 3, name: "Technical Windbreaker", category: "jackets", price: 150 },
-    { id: 4, name: "Relaxed Cargo", category: "pants", price: 110 },
-    { id: 5, name: "IVTY Knit Sweat", category: "sweaters", price: 95 },
+    { id: 3, name: "Technical Bomber", category: "jackets", price: 150 },
+    { id: 4, name: "Utility Cargo", category: "pants", price: 110 },
+    { id: 5, name: "Knit Sweat", category: "sweaters", price: 95 },
     { id: 6, name: "Oversized Blank", category: "shirts", price: 35 }
 ];
 
@@ -32,29 +32,21 @@ function addToCart(id) {
     const product = products.find(p => p.id === id);
     cart.push({...product, cartId: Date.now()});
     updateCartUI();
-    if(!document.getElementById('cart-sidebar').classList.contains('open')) {
-        toggleCart();
-    }
+    if(!document.getElementById('cart-sidebar').classList.contains('open')) toggleCart();
 }
 
 function updateCartUI() {
     localStorage.setItem('ivty_cart', JSON.stringify(cart));
     document.getElementById('cart-count').innerText = cart.length;
-    
     const list = document.getElementById('cart-items-list');
     list.innerHTML = "";
-    
     let total = 0;
     cart.forEach(item => {
         total += item.price;
-        // FIXED: Now displays Name and Price in the cart
         list.innerHTML += `
             <div class="cart-item">
-                <div>
-                    <h5>${item.name}</h5>
-                    <p>$${item.price}</p>
-                </div>
-                <button style="color:red; border:none; background:none; cursor:pointer; font-weight:bold;" onclick="removeItem(${item.cartId})">REMOVE</button>
+                <div><h5>${item.name}</h5><p>$${item.price}</p></div>
+                <button style="color:red;border:none;background:none;cursor:pointer;" onclick="removeItem(${item.cartId})">X</button>
             </div>
         `;
     });
@@ -68,6 +60,24 @@ function removeItem(cartId) {
 
 function toggleCart() {
     document.getElementById('cart-sidebar').classList.toggle('open');
+}
+
+/* Checkout Modal Logic */
+function startCheckout() {
+    if(cart.length === 0) return alert("Your cart is empty!");
+    document.getElementById('checkout-modal').style.display = 'flex';
+}
+
+function closeCheckout() {
+    document.getElementById('checkout-modal').style.display = 'none';
+}
+
+function processPayment() {
+    alert("ORDER RECEIVED. THANK YOU FOR JOINING THE COLLECTIVE.");
+    cart = [];
+    updateCartUI();
+    closeCheckout();
+    toggleCart();
 }
 
 window.onload = () => {
