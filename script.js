@@ -1,13 +1,13 @@
 const products = [
-    { id: 1, name: "IVTY Heavy Hoodie", category: "sweaters", price: 85 },
-    { id: 2, name: "IVTY Boxy Tee", category: "shirts", price: 45 },
-    { id: 3, name: "V1 Technical Bomber", category: "jackets", price: 120 },
-    { id: 4, name: "Utility Cargo", category: "pants", price: 95 },
-    { id: 5, name: "Knit Crewneck", category: "sweaters", price: 75 },
-    { id: 6, name: "Logo Tee", category: "shirts", price: 40 }
+    { id: 1, name: "IVTY V1 Hoodie", category: "sweaters", price: 85 },
+    { id: 2, name: "IVTY Essential Tee", category: "shirts", price: 45 },
+    { id: 3, name: "Technical Windbreaker", category: "jackets", price: 150 },
+    { id: 4, name: "Relaxed Cargo", category: "pants", price: 110 },
+    { id: 5, name: "IVTY Knit Sweat", category: "sweaters", price: 95 },
+    { id: 6, name: "Oversized Blank", category: "shirts", price: 35 }
 ];
 
-let cart = JSON.parse(localStorage.getItem('ivty-cart')) || [];
+let cart = JSON.parse(localStorage.getItem('ivty_cart')) || [];
 
 function filterCategory(cat, btn) {
     const container = document.getElementById('product-container');
@@ -21,10 +21,10 @@ function filterCategory(cat, btn) {
     filtered.forEach(p => {
         container.innerHTML += `
             <div class="product-card">
-                <div class="placeholder-icon">[IMAGE PLACEHOLDER]</div>
+                <div class="placeholder-icon">IVTY-${p.category.toUpperCase()}</div>
                 <h4>${p.name}</h4>
                 <p>$${p.price}</p>
-                <button class="add-to-cart" onclick="addToCart(${p.id})">ADD TO CART</button>
+                <button class="add-btn" onclick="addToCart(${p.id})">ADD TO CART</button>
             </div>
         `;
     });
@@ -32,40 +32,48 @@ function filterCategory(cat, btn) {
 
 function addToCart(id) {
     const product = products.find(p => p.id === id);
-    cart.push(product);
-    updateCart();
+    cart.push({...product, cartId: Date.now()}); // Unique ID for removals
+    updateCartUI();
+    if(!document.getElementById('cart-sidebar').classList.contains('open')) {
+        toggleCart();
+    }
 }
 
-function updateCart() {
-    localStorage.setItem('ivty-cart', JSON.stringify(cart));
+function removeItem(cartId) {
+    cart = cart.filter(item => item.cartId !== cartId);
+    updateCartUI();
+}
+
+function updateCartUI() {
+    localStorage.setItem('ivty_cart', JSON.stringify(cart));
     document.getElementById('cart-count').innerText = cart.length;
     
-    const itemsContainer = document.getElementById('cart-items');
-    itemsContainer.innerHTML = "";
+    const list = document.getElementById('cart-items-list');
+    list.innerHTML = "";
     
     let total = 0;
-    cart.forEach((item, index) => {
+    cart.forEach(item => {
         total += item.price;
-        itemsContainer.innerHTML += `
+        list.innerHTML += `
             <div class="cart-item">
-                <span>${item.name}</span>
-                <span>$${item.price} <button onclick="removeItem(${index})">X</button></span>
+                <div>
+                    <h5 style="margin:0">${item.name}</h5>
+                    <small>$${item.price}</small>
+                </div>
+                <button class="remove-btn" onclick="removeItem(${item.cartId})">REMOVE</button>
             </div>
         `;
     });
-    document.getElementById('cart-total').innerText = `$${total}`;
-}
-
-function removeItem(index) {
-    cart.splice(index, 1);
-    updateCart();
+    
+    document.getElementById('cart-total-price').innerText = `$${total}`;
 }
 
 function toggleCart() {
     document.getElementById('cart-sidebar').classList.toggle('open');
 }
 
+// Ensure the shop loads immediately
 window.onload = () => {
     filterCategory('all', document.querySelector('.filter-btn'));
-    updateCart();
+    updateCartUI();
 };
