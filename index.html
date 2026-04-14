@@ -14,27 +14,48 @@
     <nav>
         <div class="logo">IVTY</div>
         <ul class="nav-links">
-            <li><a href="#shop" onclick="showSection('shop')">Shop</a></li>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#shop">Shop</a></li>
             <li><a href="about.html" target="_blank">About</a></li>
-            <li><a href="#">Cart (0)</a></li>
+            <li><button class="cart-toggle" onclick="toggleCart()">Cart (<span id="cart-count">0</span>)</button></li>
         </ul>
     </nav>
+
+    <section id="home" class="hero-section">
+        <div class="glow-container">
+            <div class="glow-circle"></div>
+            <h1 class="giant-text">IVTY</h1>
+            <a href="#shop" class="shop-trigger-btn">SHOP THE DROP</a>
+        </div>
+    </section>
 
     <section id="shop" class="page-section">
         <div class="shop-layout">
             <aside class="sidebar">
                 <h3>Categories</h3>
-                <button class="filter-btn active" onclick="filterCategory('all')">All Items</button>
-                <button class="filter-btn" onclick="filterCategory('sweaters')">Sweaters</button>
-                <button class="filter-btn" onclick="filterCategory('shirts')">Shirts</button>
-                <button class="filter-btn" onclick="filterCategory('jackets')">Jackets</button>
-                <button class="filter-btn" onclick="filterCategory('pants')">Pants</button>
+                <button class="filter-btn active" onclick="filterCategory('all', this)">All Items</button>
+                <button class="filter-btn" onclick="filterCategory('sweaters', this)">Sweaters</button>
+                <button class="filter-btn" onclick="filterCategory('shirts', this)">Shirts</button>
+                <button class="filter-btn" onclick="filterCategory('jackets', this)">Jackets</button>
+                <button class="filter-btn" onclick="filterCategory('pants', this)">Pants</button>
             </aside>
 
             <main class="product-grid" id="product-container">
                 </main>
         </div>
     </section>
+
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2>YOUR CART</h2>
+            <button onclick="toggleCart()">CLOSE</button>
+        </div>
+        <div id="cart-items"></div>
+        <div class="cart-footer">
+            <p>Total: <span id="cart-total">$0</span></p>
+            <button class="checkout-btn">CHECKOUT</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
