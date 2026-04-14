@@ -1,0 +1,11 @@
+{
+  "name": "ivty-clothing",
+  "version": "1.0.0",
+  "description": "Minimalist clothing store for IVTY",
+  "main": "script.js",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "author": "Dunko",
+  "license": "MIT"
+}
