@@ -1,0 +1,49 @@
+:root {
+    --main-bg: #ffffff;
+    --text-color: #111111;
+    --accent: #555555;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--main-bg);
+    color: var(--text-color);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 5%;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+ul { display: flex; list-style: none; gap: 20px; }
+a { text-decoration: none; color: black; font-weight: 500; }
+
+.hero {
+    height: 80vh;
+    background: url('assets/hero-bg.jpg') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cta-btn {
+    background: black;
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.cta-btn:hover { background: var(--accent); }
