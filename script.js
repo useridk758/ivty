@@ -1,121 +1,106 @@
-// Product Database
 const products = [
     { 
         id: 1, 
         name: "STRUCTURE 01 - ADAM", 
         category: "shirts", 
         price: 45, 
-        // Image Links Provided
+        frontImg: "https://www.image2url.com/r2/default/images/1776736737916-2298b0a1-0b43-423e-b708-d65afee2e92d.png", 
+        backImg: "https://www.image2url.com/r2/default/images/1776736808881-2157a855-9909-4354-b469-3a07256e7327.png" 
+    },
+    { 
+        id: 2, 
+        name: "STRUCTURE 02 - REFINED", 
+        category: "shirts", 
+        price: 50, 
         frontImg: "https://i.im.ge/eB3p7T/image.png", 
         backImg: "https://i.im.ge/eB3vAc/image.png" 
-    },
-    { id: 2, name: "IVTY V1 Hoodie", category: "sweaters", price: 85, frontImg: "", backImg: "" },
-    { id: 3, name: "Technical Bomber", category: "jackets", price: 150, frontImg: "", backImg: "" },
-    { id: 4, name: "Utility Cargo", category: "pants", price: 110, frontImg: "", backImg: "" }
+    }
+    // Items with no images are automatically removed/not included here
 ];
 
-let cart = JSON.parse(localStorage.getItem('ivty_cart')) || [];
+let cart = [];
 
-// Handle Intro Animation
-window.addEventListener('DOMContentLoaded', () => {
-    const overlay = document.getElementById('loading-overlay');
-    const mainTitle = document.querySelector('.giant-text');
-    
+window.onload = () => {
+    filterCategory('all');
     setTimeout(() => {
-        if(overlay) overlay.classList.add('fade-out');
-        if(mainTitle) mainTitle.classList.add('reveal');
-    }, 2000);
-});
+        document.getElementById('loading-overlay').classList.add('fade-out');
+    }, 1000);
+};
 
-// Category Filtering & Product Display
-function filterCategory(cat, btn) {
+function filterCategory(cat) {
     const container = document.getElementById('product-container');
-    if (!container) return;
     container.innerHTML = "";
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-
-    const filtered = cat === 'all' ? products : products.filter(p => p.category === cat);
+    
+    // Logic: Only show products that actually have a front image
+    const filtered = products.filter(p => p.frontImg !== "" && (cat === 'all' || p.category === cat));
+    
     filtered.forEach(p => {
-        // Safe default if image URLs are missing
-        const displayImg = p.frontImg || `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23111"/><text x="50%" y="50%" fill="%23333" font-family="sans-serif" font-weight="bold" text-anchor="middle">IVTY</text></svg>`;
-        
         container.innerHTML += `
             <div class="product-card" id="prod-${p.id}">
                 <div class="image-container">
-                    <img src="${displayImg}" class="product-img" id="img-${p.id}">
-                    ${p.backImg ? `
+                    <img src="${p.frontImg}" class="product-img" id="img-display-${p.id}">
                     <div class="view-toggle">
-                        <button class="dot active" onclick="flipImage(${p.id}, 'front')"></button>
-                        <button class="dot" onclick="flipImage(${p.id}, 'back')"></button>
-                    </div>` : ''}
+                        <button class="dot active" onclick="swapView(${p.id}, '${p.frontImg}', this)"></button>
+                        <button class="dot" onclick="swapView(${p.id}, '${p.backImg}', this)"></button>
+                    </div>
                 </div>
                 <h4>${p.name}</h4>
                 <p>$${p.price}</p>
-                <button class="add-btn" onclick="addToCart(${p.id})">ADD TO CART</button>
+                <button class="final-btn" onclick="addToCart(${p.id})">ADD TO CART</button>
             </div>
         `;
     });
 }
 
-// Function to handle image toggling
-function flipImage(id, side) {
-    const product = products.find(p => p.id === id);
-    const imgElement = document.getElementById(`img-${id}`);
-    const dots = document.querySelectorAll(`#prod-${id} .dot`);
-    
-    if (side === 'front') {
-        imgElement.src = product.frontImg;
-        dots[0].classList.add('active');
-        dots[1].classList.remove('active');
-    } else {
-        imgElement.src = product.backImg;
-        dots[0].classList.remove('active');
-        dots[1].classList.add('active');
-    }
-}
-
-// Cart System Functions
-function addToCart(id) {
-    const product = products.find(p => p.id === id);
-    cart.push({...product, cartId: Date.now()});
-    updateCartUI();
-    if(!document.getElementById('cart-sidebar').classList.contains('open')) toggleCart();
-}
-
-function updateCartUI() {
-    localStorage.setItem('ivty_cart', JSON.stringify(cart));
-    const countEl = document.getElementById('cart-count');
-    if (countEl) countEl.innerText = cart.length;
-    
-    const list = document.getElementById('cart-items-list');
-    if (!list) return;
-    list.innerHTML = "";
-    let total = 0;
-    cart.forEach(item => {
-        total += item.price;
-        list.innerHTML += `
-            <div class="cart-item">
-                <div><h5>${item.name}</h5><p>$${item.price}</p></div>
-                <button style="color:red;border:none;background:none;cursor:pointer;" onclick="removeItem(${item.cartId})">X</button>
-            </div>
-        `;
-    });
-    document.getElementById('cart-total-price').innerText = `$${total}`;
-}
-
-function removeItem(cartId) {
-    cart = cart.filter(item => item.cartId !== cartId);
-    updateCartUI();
+function swapView(id, url, btn) {
+    document.getElementById(`img-display-${id}`).src = url;
+    const dots = btn.parentElement.querySelectorAll('.dot');
+    dots.forEach(d => d.classList.remove('active'));
+    btn.classList.add('active');
 }
 
 function toggleCart() {
     document.getElementById('cart-sidebar').classList.toggle('open');
 }
 
-// Checkout Flow
+function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    cart.push({...product, cartInstanceId: Date.now()});
+    updateCart();
+}
+
+function removeItem(instanceId) {
+    cart = cart.filter(item => item.cartInstanceId !== instanceId);
+    updateCart();
+}
+
+function updateCart() {
+    const list = document.getElementById('cart-items-list');
+    const count = document.getElementById('cart-count');
+    const totalEl = document.getElementById('cart-total-price');
+    
+    list.innerHTML = "";
+    let total = 0;
+    
+    cart.forEach(item => {
+        total += item.price;
+        list.innerHTML += `
+            <div class="cart-item">
+                <div>
+                    <h5>${item.name}</h5>
+                    <p>$${item.price}</p>
+                </div>
+                <button class="remove-item" onclick="removeItem(${item.cartInstanceId})">REMOVE</button>
+            </div>
+        `;
+    });
+    
+    count.innerText = cart.length;
+    totalEl.innerText = `$${total}`;
+}
+
 function startCheckout() {
-    if(cart.length === 0) return alert("Your cart is empty!");
+    if(cart.length === 0) return alert("Cart is empty");
     document.getElementById('checkout-modal').style.display = 'flex';
 }
 
@@ -124,15 +109,9 @@ function closeCheckout() {
 }
 
 function processPayment() {
-    alert("ORDER RECEIVED. THANK YOU FOR JOINING THE COLLECTIVE.");
+    alert("ORDER PROCESSED. JOIN THE COLLECTIVE.");
     cart = [];
-    updateCartUI();
+    updateCart();
     closeCheckout();
     toggleCart();
 }
-
-// Initialization
-window.onload = () => {
-    filterCategory('all', document.querySelector('.filter-btn'));
-    updateCartUI();
-};
