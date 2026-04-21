@@ -4,18 +4,17 @@ const products = [
         name: "STRUCTURE 01 - ADAM", 
         category: "shirts", 
         price: 45, 
-        frontImg: "https://www.image2url.com/r2/default/images/1776736737916-2298b0a1-0b43-423e-b708-d65afee2e92d.png", 
-        backImg: "https://www.image2url.com/r2/default/images/1776736808881-2157a855-9909-4354-b469-3a07256e7327.png" 
+        frontImg: "https://i.im.ge/eB3p7T/image.png", 
+        backImg: "https://i.im.ge/eB3vAc/image.png" 
     },
     { 
         id: 2, 
         name: "STRUCTURE 02 - REFINED", 
         category: "shirts", 
         price: 50, 
-        frontImg: "https://i.im.ge/eB3p7T/image.png", 
-        backImg: "https://i.im.ge/eB3vAc/image.png" 
+        frontImg: "https://www.image2url.com/r2/default/images/1776736737916-2298b0a1-0b43-423e-b708-d65afee2e92d.png", 
+        backImg: "https://www.image2url.com/r2/default/images/1776736808881-2157a855-9909-4354-b469-3a07256e7327.png" 
     }
-    // Items with no images are automatically removed/not included here
 ];
 
 let cart = [];
@@ -23,16 +22,25 @@ let cart = [];
 window.onload = () => {
     filterCategory('all');
     setTimeout(() => {
-        document.getElementById('loading-overlay').classList.add('fade-out');
-    }, 1000);
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) overlay.classList.add('fade-out');
+    }, 1200);
 };
 
-function filterCategory(cat) {
+function filterCategory(cat, btn = null) {
     const container = document.getElementById('product-container');
+    if (!container) return;
     container.innerHTML = "";
     
-    // Logic: Only show products that actually have a front image
-    const filtered = products.filter(p => p.frontImg !== "" && (cat === 'all' || p.category === cat));
+    // Update Sidebar active state
+    if (btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    // Only render items with existing front images
+    const activeProducts = products.filter(p => p.frontImg && p.frontImg !== "");
+    const filtered = cat === 'all' ? activeProducts : activeProducts.filter(p => p.category === cat);
     
     filtered.forEach(p => {
         container.innerHTML += `
@@ -53,7 +61,9 @@ function filterCategory(cat) {
 }
 
 function swapView(id, url, btn) {
-    document.getElementById(`img-display-${id}`).src = url;
+    const displayImg = document.getElementById(`img-display-${id}`);
+    if (displayImg) displayImg.src = url;
+    
     const dots = btn.parentElement.querySelectorAll('.dot');
     dots.forEach(d => d.classList.remove('active'));
     btn.classList.add('active');
@@ -65,8 +75,14 @@ function toggleCart() {
 
 function addToCart(id) {
     const product = products.find(p => p.id === id);
-    cart.push({...product, cartInstanceId: Date.now()});
-    updateCart();
+    if (product) {
+        cart.push({...product, cartInstanceId: Date.now()});
+        updateCart();
+        // Optional: Auto-open cart when item added
+        if (!document.getElementById('cart-sidebar').classList.contains('open')) {
+            toggleCart();
+        }
+    }
 }
 
 function removeItem(instanceId) {
@@ -95,12 +111,12 @@ function updateCart() {
         `;
     });
     
-    count.innerText = cart.length;
-    totalEl.innerText = `$${total}`;
+    if (count) count.innerText = cart.length;
+    if (totalEl) totalEl.innerText = `$${total}`;
 }
 
 function startCheckout() {
-    if(cart.length === 0) return alert("Cart is empty");
+    if (cart.length === 0) return alert("Your cart is empty.");
     document.getElementById('checkout-modal').style.display = 'flex';
 }
 
@@ -109,7 +125,7 @@ function closeCheckout() {
 }
 
 function processPayment() {
-    alert("ORDER PROCESSED. JOIN THE COLLECTIVE.");
+    alert("ORDER RECEIVED. THE COLLECTIVE HAS BEEN UPDATED.");
     cart = [];
     updateCart();
     closeCheckout();
