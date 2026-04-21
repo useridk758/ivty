@@ -1,10 +1,15 @@
 const products = [
-    { id: 1, name: "IVTY V1 Hoodie", category: "sweaters", price: 85 },
-    { id: 2, name: "IVTY Essential Tee", category: "shirts", price: 45 },
-    { id: 3, name: "Technical Bomber", category: "jackets", price: 150 },
-    { id: 4, name: "Utility Cargo", category: "pants", price: 110 },
-    { id: 5, name: "Knit Sweat", category: "sweaters", price: 95 },
-    { id: 6, name: "Oversized Blank", category: "shirts", price: 35 }
+    { 
+        id: 1, 
+        name: "STRUCTURE 01 - ADAM", 
+        category: "shirts", 
+        price: 45, 
+        frontImg: "https://googleusercontent.com/image_generation_content/0", 
+        backImg: "https://googleusercontent.com/image_generation_content/1" 
+    },
+    { id: 2, name: "IVTY V1 Hoodie", category: "sweaters", price: 85, frontImg: "", backImg: "" },
+    { id: 3, name: "Technical Bomber", category: "jackets", price: 150, frontImg: "", backImg: "" },
+    { id: 4, name: "Utility Cargo", category: "pants", price: 110, frontImg: "", backImg: "" }
 ];
 
 let cart = JSON.parse(localStorage.getItem('ivty_cart')) || [];
@@ -15,9 +20,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const mainTitle = document.querySelector('.giant-text');
     
     setTimeout(() => {
-        overlay.classList.add('fade-out');
-        mainTitle.classList.add('reveal');
-    }, 2000); // 2 second delay for the cool factor
+        if(overlay) overlay.classList.add('fade-out');
+        if(mainTitle) mainTitle.classList.add('reveal');
+    }, 2000);
 });
 
 function filterCategory(cat, btn) {
@@ -25,19 +30,46 @@ function filterCategory(cat, btn) {
     if (!container) return;
     container.innerHTML = "";
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if(btn) btn.classList.add('active');
 
     const filtered = cat === 'all' ? products : products.filter(p => p.category === cat);
     filtered.forEach(p => {
+        // Fallback for missing images
+        const displayImg = p.frontImg || `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23111"/><text x="50%" y="50%" fill="%23333" font-family="sans-serif" font-weight="bold" text-anchor="middle">IVTY</text></svg>`;
+        
         container.innerHTML += `
-            <div class="product-card">
-                <div class="placeholder-icon">IVTY-${p.category.toUpperCase()}</div>
+            <div class="product-card" id="prod-${p.id}">
+                <div class="image-container">
+                    <img src="${displayImg}" class="product-img" id="img-${p.id}">
+                    ${p.backImg ? `
+                    <div class="view-toggle">
+                        <button class="dot active" onclick="flipImage(${p.id}, 'front')"></button>
+                        <button class="dot" onclick="flipImage(${p.id}, 'back')"></button>
+                    </div>` : ''}
+                </div>
                 <h4>${p.name}</h4>
                 <p>$${p.price}</p>
                 <button class="add-btn" onclick="addToCart(${p.id})">ADD TO CART</button>
             </div>
         `;
     });
+}
+
+// NEW: Function to toggle front/back view
+function flipImage(id, side) {
+    const product = products.find(p => p.id === id);
+    const imgElement = document.getElementById(`img-${id}`);
+    const dots = document.querySelectorAll(`#prod-${id} .dot`);
+    
+    if (side === 'front') {
+        imgElement.src = product.frontImg;
+        dots[0].classList.add('active');
+        dots[1].classList.remove('active');
+    } else {
+        imgElement.src = product.backImg;
+        dots[0].classList.remove('active');
+        dots[1].classList.add('active');
+    }
 }
 
 function addToCart(id) {
