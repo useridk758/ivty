@@ -4,16 +4,18 @@ const products = [
         name: "STRUCTURE 01 - ADAM", 
         category: "shirts", 
         price: 45, 
-        frontImg: "https://i.im.ge/eB3p7T/image.png", 
-        backImg: "https://i.im.ge/eB3vAc/image.png" 
+        // Corrected: Front (IVTY Text) first
+        frontImg: "https://www.image2url.com/r2/default/images/1776736737916-2298b0a1-0b43-423e-b708-d65afee2e92d.png", 
+        backImg: "https://www.image2url.com/r2/default/images/1776736808881-2157a855-9909-4354-b469-3a07256e7327.png" 
     },
     { 
         id: 2, 
         name: "STRUCTURE 02 - REFINED", 
         category: "shirts", 
         price: 50, 
-        frontImg: "https://www.image2url.com/r2/default/images/1776736737916-2298b0a1-0b43-423e-b708-d65afee2e92d.png", 
-        backImg: "https://www.image2url.com/r2/default/images/1776736808881-2157a855-9909-4354-b469-3a07256e7327.png" 
+        // Corrected: Front (Vitruvian Man) first
+        frontImg: "https://i.im.ge/eB3p7T/image.png", 
+        backImg: "https://i.im.ge/eB3vAc/image.png" 
     }
 ];
 
@@ -32,13 +34,11 @@ function filterCategory(cat, btn = null) {
     if (!container) return;
     container.innerHTML = "";
     
-    // Update Sidebar active state
     if (btn) {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
     }
 
-    // Only render items with existing front images
     const activeProducts = products.filter(p => p.frontImg && p.frontImg !== "");
     const filtered = cat === 'all' ? activeProducts : activeProducts.filter(p => p.category === cat);
     
@@ -63,7 +63,6 @@ function filterCategory(cat, btn = null) {
 function swapView(id, url, btn) {
     const displayImg = document.getElementById(`img-display-${id}`);
     if (displayImg) displayImg.src = url;
-    
     const dots = btn.parentElement.querySelectorAll('.dot');
     dots.forEach(d => d.classList.remove('active'));
     btn.classList.add('active');
@@ -78,7 +77,6 @@ function addToCart(id) {
     if (product) {
         cart.push({...product, cartInstanceId: Date.now()});
         updateCart();
-        // Optional: Auto-open cart when item added
         if (!document.getElementById('cart-sidebar').classList.contains('open')) {
             toggleCart();
         }
