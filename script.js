@@ -4,8 +4,8 @@ const products = [
         name: "STRUCTURE 01 - ADAM", 
         category: "shirts", 
         price: 45, 
-        frontImg: "https://googleusercontent.com/image_generation_content/0", 
-        backImg: "https://googleusercontent.com/image_generation_content/1" 
+        frontImg: "https://www.image2url.com/r2/default/images/1776736737916-2298b0a1-0b43-423e-b708-d65afee2e92d.png", 
+        backImg: "https://www.image2url.com/r2/default/images/1776736808881-2157a855-9909-4354-b469-3a07256e7327.png" 
     },
     { id: 2, name: "IVTY V1 Hoodie", category: "sweaters", price: 85, frontImg: "", backImg: "" },
     { id: 3, name: "Technical Bomber", category: "jackets", price: 150, frontImg: "", backImg: "" },
@@ -34,7 +34,6 @@ function filterCategory(cat, btn) {
 
     const filtered = cat === 'all' ? products : products.filter(p => p.category === cat);
     filtered.forEach(p => {
-        // Fallback for missing images
         const displayImg = p.frontImg || `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23111"/><text x="50%" y="50%" fill="%23333" font-family="sans-serif" font-weight="bold" text-anchor="middle">IVTY</text></svg>`;
         
         container.innerHTML += `
@@ -55,7 +54,6 @@ function filterCategory(cat, btn) {
     });
 }
 
-// NEW: Function to toggle front/back view
 function flipImage(id, side) {
     const product = products.find(p => p.id === id);
     const imgElement = document.getElementById(`img-${id}`);
