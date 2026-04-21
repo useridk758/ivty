@@ -8,7 +8,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-white); scroll-behavior: smooth; overflow-x: hidden; }
 
-/* NEW: Intro Loading Overlay */
+/* Intro Loading Overlay */
 #loading-overlay {
     position: fixed;
     top: 0;
@@ -55,7 +55,6 @@ nav { display: flex; justify-content: space-between; padding: 25px 5%; backgroun
     letter-spacing: -10px; 
     line-height: 0.8; 
     margin-bottom: 20px; 
-    /* NEW: Reveal animation */
     opacity: 0;
     transform: translateY(20px);
     transition: 1.5s ease-out;
@@ -71,17 +70,29 @@ nav { display: flex; justify-content: space-between; padding: 25px 5%; backgroun
 @keyframes pulse { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 0.8; transform: scale(1.2); } }
 .shop-trigger-btn { display: inline-block; padding: 18px 50px; background: #fff; color: #000; text-decoration: none; font-weight: 900; letter-spacing: 2px; }
 
-/* Shop - Fixed White Text */
+/* Shop */
 .shop-page { min-height: 100vh; background: #000; color: #fff; padding-top: 100px; }
 .shop-layout { display: flex; }
 .sidebar { width: 300px; padding: 60px 5%; border-right: 1px solid #222; }
 .filter-btn { display: block; width: 100%; text-align: left; background: none; border: none; padding: 15px 0; font-weight: 800; color: #fff; cursor: pointer; text-transform: uppercase; border-bottom: 1px solid #222; }
 .filter-btn.active { border-bottom: 2px solid #fff; }
 
-.product-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
-.product-card { padding: 40px; border: 0.5px solid #222; background: #000; text-align: center; }
-.placeholder-icon { width: 100%; aspect-ratio: 1/1; background: #111; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: #333; font-weight: 900; }
-.add-btn { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: 900; cursor: pointer; }
+.product-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); }
+.product-card { padding: 30px; border: 0.5px solid #222; background: #000; text-align: center; transition: 0.3s; }
+.product-card:hover { border-color: #555; }
+
+/* Image Toggle System */
+.image-container { position: relative; width: 100%; aspect-ratio: 1/1; background: #111; margin-bottom: 20px; overflow: hidden; }
+.product-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease; }
+.view-toggle { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; opacity: 0; transition: 0.3s; }
+.product-card:hover .view-toggle { opacity: 1; }
+.dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; border: none; }
+.dot.active { background: #fff; }
+
+.product-card h4 { font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; }
+.product-card p { color: #888; font-weight: 700; margin-bottom: 20px; }
+.add-btn { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+.add-btn:hover { background: #ccc; }
 
 /* Cart */
 .cart-sidebar { position: fixed; right: -450px; top: 0; width: 450px; height: 100%; background: #fff; color: #000; z-index: 2000; transition: 0.4s; padding: 50px; display: flex; flex-direction: column; max-width: 100vw; }
@@ -89,13 +100,6 @@ nav { display: flex; justify-content: space-between; padding: 25px 5%; backgroun
 .cart-item { border-bottom: 1px solid #eee; padding: 20px 0; display: flex; justify-content: space-between; }
 .cart-item h5 { text-transform: uppercase; font-weight: 900; }
 .checkout-btn { width: 100%; padding: 20px; background: #000; color: #fff; border: none; font-weight: 900; cursor: pointer; }
-
-/* Checkout Modal */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; display: none; align-items: center; justify-content: center; }
-.modal-content { background: #fff; color: #000; padding: 50px; width: 90%; max-width: 500px; text-align: center; border-radius: 4px; }
-.checkout-form input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; font-family: inherit; font-weight: 700; }
-.final-btn { width: 100%; padding: 15px; background: #000; color: #fff; border: none; margin-top: 20px; font-weight: 900; cursor: pointer; }
-.modal-close { background: none; border: none; margin-top: 20px; font-weight: 700; cursor: pointer; text-decoration: underline; }
 
 /* Footer */
 footer { padding: 120px 5%; background: #000; text-align: center; border-top: 1px solid #222; }
