@@ -9,8 +9,20 @@ const products = [
 
 let cart = JSON.parse(localStorage.getItem('ivty_cart')) || [];
 
+// Handle Intro Animation
+window.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('loading-overlay');
+    const mainTitle = document.querySelector('.giant-text');
+    
+    setTimeout(() => {
+        overlay.classList.add('fade-out');
+        mainTitle.classList.add('reveal');
+    }, 2000); // 2 second delay for the cool factor
+});
+
 function filterCategory(cat, btn) {
     const container = document.getElementById('product-container');
+    if (!container) return;
     container.innerHTML = "";
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -37,8 +49,11 @@ function addToCart(id) {
 
 function updateCartUI() {
     localStorage.setItem('ivty_cart', JSON.stringify(cart));
-    document.getElementById('cart-count').innerText = cart.length;
+    const countEl = document.getElementById('cart-count');
+    if (countEl) countEl.innerText = cart.length;
+    
     const list = document.getElementById('cart-items-list');
+    if (!list) return;
     list.innerHTML = "";
     let total = 0;
     cart.forEach(item => {
@@ -62,7 +77,6 @@ function toggleCart() {
     document.getElementById('cart-sidebar').classList.toggle('open');
 }
 
-/* Checkout Modal Logic */
 function startCheckout() {
     if(cart.length === 0) return alert("Your cart is empty!");
     document.getElementById('checkout-modal').style.display = 'flex';
