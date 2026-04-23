@@ -4,16 +4,18 @@ const products = [
         name: "STRUCTURE 01 - ADAM", 
         category: "shirts", 
         price: 45, 
-        frontImg: "https://www.image2url.com/r2/default/images/1776736737916-2298b0a1-0b43-423e-b708-d65afee2e92d.png", 
-        backImg: "https://www.image2url.com/r2/default/images/1776736808881-2157a855-9909-4354-b469-3a07256e7327.png" 
+        // FIXED: Using permanent postimg links
+        frontImg: "https://i.postimg.cc/tJn9p2rC/adam-front.png", 
+        backImg: "https://i.postimg.cc/6pXmD6mS/adam-back.png" 
     },
     { 
         id: 2, 
         name: "STRUCTURE 02 - REFINED", 
         category: "shirts", 
         price: 50, 
-        frontImg: "https://i.im.ge/eB3p7T/image.png", 
-        backImg: "https://i.im.ge/eB3vAc/image.png" 
+        // FIXED: Using permanent postimg links
+        frontImg: "https://i.postimg.cc/mD3mX6Ym/refined-front.png", 
+        backImg: "https://i.postimg.cc/vTjXpY1P/refined-back.png" 
     },
     { 
         id: 3, 
